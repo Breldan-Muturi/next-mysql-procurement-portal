@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User{
+  id String @id @default(uuid())
+  email String @unique
+  role Role @default(USER)
+  profileImage String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  companies Company[]
+}
+
+model Company {
+  id Int @id @default(autoincrement())
+  organizationName String @db.VarChar(255) @unique
+  organizationType OrganizationType
+  ownership Nationality
+  servicesOffered Service?
+  organizationRegistrationDate DateTime
+  organizationRegistrationNumber String @db.VarChar(18)
+  registrationCertificate String
+  cr12 String @db.VarChar(255)
+  KRAPIN String @db.VarChar(18) 
+  KRAPINCertificate String @db.VarChar(255)
+  taxComplianceNumber String @db.VarChar(18)
+  taxComplianceExpiry DateTime
+  taxComplianceCertificate String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Title {
+  Mr
+  Mrs
+  Ms
+}
+
+enum OrganizationType {
+  SoleProprietorship
+  Partnership
+  PrivateLimitedCompany
+  PublicLimitedCompany
+}
+
+enum Nationality {
+  Kenyan
+  NonCitizen
+}
+
+enum AGPOCategory {
+  Youth
+  Women
+  PWD
+}
+
+enum Status {
+  Approved
+  Pending
+  Rejected
+}
+
+enum OpportunityStatus {
+  In_Progress
+  Draft
+  Closed
+}
+
+enum ContractStatus {
+  In_Progress
+  Ended
+  Draft
+}
+
+enum Service {
+  End_User_Computing
+  Software_Development
+  Digital_Media
+  Policy
+  Consultancy
+  Non_Consultancy_Services
+}
